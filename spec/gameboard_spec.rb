@@ -1,12 +1,28 @@
-require './tic_tac_toe.rb'
+require './lib/gameboard.rb'
 
 describe Gameboard do
-  subject(:gameboard) {described_class.new()}
 
+  subject(:gameboard) {described_class.new()}
+  let(:rows) {gameboard.instance_variable_get(:@rows)}
+  let(:columns) {gameboard.instance_variable_get(:@columns)}
+  let(:diagonals) {gameboard.instance_variable_get(:@diagonals)}
+  
+  describe '#create' do
+    it 'creates and ads value to rows' do
+      empty_rows = []
+      expect{gameboard.create(empty_rows)}.to change { empty_rows }.to [[1,2,3],[4,5,6],[7,8,9]]
+    end
+    it 'creates and ads value to columnss' do
+      empty_columns = []
+      expect{gameboard.create(rows,empty_columns)}.to change { empty_columns }.to [[1,4,7],[2,5,8],[3,6,9]]
+      diagonals = gameboard.instance_variable_get(:@diagonals)
+    end
+    it 'creates and ads value to diagonals' do
+      empty_diagonals = []
+      expect{gameboard.create(rows,columns,empty_diagonals)}.to change { empty_diagonals }.to [[1,5,9],[3,5,7]]
+    end
+  end
   describe '#win?' do
-    let(:rows) {gameboard.instance_variable_get(:@rows)}
-    let(:columns) {gameboard.instance_variable_get(:@columns)}
-    let(:diagonals) {gameboard.instance_variable_get(:@diagonals)}
     describe 'when one of the rows are full' do
       it 'returns true' do 
         winning_rows = [['x','x','x']]
