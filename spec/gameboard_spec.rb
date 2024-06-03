@@ -22,6 +22,38 @@ describe Gameboard do
       expect{gameboard.create(rows,columns,empty_diagonals)}.to change { empty_diagonals }.to [[1,5,9],[3,5,7]]
     end
   end
+  describe '#number_invalid?' do
+    describe 'number is not smaller than 1' do 
+      it 'returns false' do
+        result = gameboard.number_invalid?(1)
+        expect(result).to eq(false)
+      end
+    end
+    describe 'number is smaller than @size*@size' do 
+      it 'returns false' do
+        result = gameboard.number_invalid?(5)
+        expect(result).to eq(false)
+      end
+    end
+    describe 'num is not a integer' do 
+      it 'returns true' do
+        result = gameboard.number_invalid?('d')
+        expect(result).to eq(true)
+      end
+    end
+    describe 'number is smaller than 1' do
+      it 'returns true' do
+        result = gameboard.number_invalid?(-1)
+        expect(result).to eq(true)
+      end
+    end
+    describe 'number is bigger than @size*size' do 
+      it 'returns false' do
+        result = gameboard.number_invalid?(123)
+        expect(result).to eq(true)
+      end
+    end
+  end
   describe '#win?' do
     describe 'when one of the rows are full' do
       it 'returns true' do 
