@@ -37,8 +37,13 @@ class Gameboard
 
   def choose_square(num, symbol)
     system "clear"
+    p num
     found = false
-    return if check_validity(num, symbol)
+    if number_invalid?(num)
+      num = get_number(num,symbol)
+      choose_square(num,symbol)
+      return
+    end
     [@rows,@columns,@diagonals].each do |array|
       array.each do |array2|
         array2.map!.with_index do |item| 
@@ -49,21 +54,28 @@ class Gameboard
       end
     end
     #Ask the user to retry if the number wasn't found
-    check_validity(0, symbol) if !found
+    if !found
+      num = get_number(0,symbol)
+      choose_square(num,symbol)
+      return
+    end
   end
-
-  def check_validity(num,symbol)
-    while (num < 1) || (num > @size * @size)
+  def get_number(num,symbol="symbol")
+    while num.class != Integer || (num < 1) || (num > @size * @size)
       system "clear"
-      valid = false
       puts "Incorrect value entered"
       draw()
       puts "Where to put the #{symbol}?"
       num = gets.to_i
-      valid = true if (num > 0) || (num < @size * @size)
     end
-    choose_square(num,symbol) if valid
-    valid
+    return num
+  end
+  def number_invalid?(num)
+    invalid = false
+    if num.class != Integer || (num < 1) || (num > @size * @size)
+      invalid = true
+    end
+    invalid
   end
 
   def win?(rows=@rows,columns=@columns,diagonals=@diagonals)
@@ -75,3 +87,6 @@ class Gameboard
     false
   end
 end
+
+game = Gameboard.new()
+p game.number_invalid?('d')
