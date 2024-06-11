@@ -6,6 +6,10 @@ describe Gameboard do
   let(:rows) {gameboard.instance_variable_get(:@rows)}
   let(:columns) {gameboard.instance_variable_get(:@columns)}
   let(:diagonals) {gameboard.instance_variable_get(:@diagonals)}
+  before do
+    allow(gameboard).to receive(:puts)
+    allow(gameboard).to receive(:system).with("clear")
+  end
   
   describe '#create' do
     it 'creates and ads value to rows' do
@@ -51,6 +55,65 @@ describe Gameboard do
       it 'returns false' do
         result = gameboard.number_invalid?(123)
         expect(result).to eq(true)
+      end
+    end
+  end
+  describe '#get_number' do
+
+    invalid_input = 999
+    valid_input = 1
+
+    describe 'when user input is valid' do
+      it 'stops the loop and print error message once' do
+        allow(gameboard).to receive(:gets).and_return(valid_input)
+        expect(gameboard).to receive(:puts).with('Incorrect value entered').once
+        gameboard.get_number(invalid_input)
+      end
+    end
+    describe 'when the user inputs an invalid value, then a valid value' do
+      before do
+        allow(gameboard).to receive(:gets).and_return(invalid_input,valid_input)
+      end
+      it 'stops the loop and print error message twice' do
+        expect(gameboard).to receive(:puts).with('Incorrect value entered').twice
+        gameboard.get_number(invalid_input)
+      end
+    end
+    describe 'when the user inputs an invalid value five times, then a valid value' do
+      before do
+        allow(gameboard).to receive(:gets).and_return(invalid_input,invalid_input,invalid_input,invalid_input,invalid_input,valid_input)
+      end
+      it 'stops the loop and print error message once' do
+        expect(gameboard).to receive(:puts).with('Incorrect value entered').exactly(6).times
+        gameboard.get_number(invalid_input)
+      end
+    end
+  end
+  describe '#choose_square' do
+    describe 'if num is valid and untaken' do
+      it 'changes the given square to the symbol' do
+        expect{gameboard.choose_square(1,'X')}.to change{rows[0][0]}.to 'X'
+      end
+    end
+    describe 'if num is valid but taken' do
+      before do
+        gameboard.choose_square(1,'X')
+      end
+      it 'calls the choose_square function again' do
+        allow(gameboard).to receive(:choose_square)
+        expect(gameboard).to receive(:choose_square).once
+        gameboard.choose_square(1,'X')
+      end
+    end
+    describe 'if num is not valid' do
+      it 'calls the get_number function and then itself' do
+        allow(gameboard).to receive(:choose_square).and_call_original
+        allow(gameboard).to receive(:get_number).and_return(2)
+
+        expect(gameboard).to receive(:get_number).once
+        expect(gameboard).to receive(:choose_square).with(2,'X')
+
+        gameboard.choose_square(123,'X')
       end
     end
   end

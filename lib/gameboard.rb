@@ -37,7 +37,6 @@ class Gameboard
 
   def choose_square(num, symbol)
     system "clear"
-    p num
     found = false
     if number_invalid?(num)
       num = get_number(num,symbol)
@@ -87,6 +86,3 @@ class Gameboard
     false
   end
 end
-
-game = Gameboard.new()
-p game.number_invalid?('d')
