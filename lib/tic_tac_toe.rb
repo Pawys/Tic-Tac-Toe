@@ -3,11 +3,11 @@ require_relative 'player'
 
 class TicTacToe
   attr_accessor :current_player
-  def initialize(round)
+  def initialize(round,gameboard = Gameboard.new(3))
     @move = 0
     @round_ammount = round
     @rounds_played = 0
-    @gameboard = Gameboard.new(3)
+    @gameboard = gameboard
     @gameboard.draw()
     @player_one = Player.new("Player_One", "X")
     @player_two = Player.new("Player_Two", "O")
@@ -32,6 +32,7 @@ class TicTacToe
 
   def finished_game?()
     return true if @rounds_played >= @round_ammount
+    false
   end
 
   def reset(result)
