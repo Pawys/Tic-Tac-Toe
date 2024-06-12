@@ -33,8 +33,12 @@ class GameManager
     @game_loop = false if gets.chomp == "n"
     system "clear"
   end
+  def game_over?
+    return true if @game_loop == false
+    false
+  end
   def play_game()
-    until @game_loop == false do
+    until game_over? do
       round = get_rounds()
       system "clear"
       @game = TicTacToe.new(round)
